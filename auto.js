@@ -267,6 +267,9 @@ async function startFarmingProcess(bot) {
 
     try {
         await sleep(3000);
+        bot.setQuickBarSlot(0);
+        console.log('[Farm] Đã tự động chọn ô đầu tiên trên Hotbar!');
+        await sleep(3000);
         bot.chat('/home'); 
         console.log('[Farm] Đã nhích đúng vị trí, ngồi xuống nhập định!');
         failCount = 0; 
