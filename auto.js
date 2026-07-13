@@ -201,16 +201,22 @@ function createBot() {
         }
     });
 
+    // ==================================================
+    // PHẦN ĐƯỢC CHỈNH SỬA: TỰ ĐỘNG RESPAWN VÀ /HOME KHI CHẾT
+    // ==================================================
     bot.on('death', () => {
         bot.clearControlStates();
         isComboRunning = false;
+        console.log('[CẢNH BÁO] Bot đã ngỏm! Đang tự động ấn Hồi Sinh và quay lại Farm...');
 
-        if (botState !== 'FARMING') {
-            console.log('[CẢNH BÁO] Bot chết ở Sảnh! Đang tự động ấn Hồi Sinh...');
-            setTimeout(() => bot.respawn(), 2000);
-        } else {
-            console.log('[CẢNH BÁO] Bot bị giết trong cụm Farm! Nằm phơi xác...');
-        }
+        setTimeout(() => {
+            bot.respawn(); // Ấn nút hồi sinh
+            // Chờ server xử lý hồi sinh trong 2s, sau đó đưa về vòng lặp farm (trong đó sẽ tự /home)
+            setTimeout(() => {
+                botState = 'FARMING'; 
+                startFarmingProcess(bot);
+            }, 2000);
+        }, 2000);
     });
 
     bot.on('end', () => {
@@ -260,7 +266,6 @@ async function startFarmingProcess(bot) {
     isComboRunning = true;
 
     try {
-       
         await sleep(3000);
         bot.chat('/home'); 
         console.log('[Farm] Đã nhích đúng vị trí, ngồi xuống nhập định!');
